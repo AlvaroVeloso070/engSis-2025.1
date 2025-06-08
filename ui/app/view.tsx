@@ -255,7 +255,7 @@ export default function MainView() {
                     <DataCard
                       className="flex-1"
                       title="Umidade do solo"
-                      data={soilData?.soilMoisture ?? 0}
+                      data={!startedSoilAnalysis ? soilData?.soilMoisture ?? 0 : 0}
                       unit="%"
                       unitPlacement="end"
                     />
