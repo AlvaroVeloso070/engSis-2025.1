@@ -1,7 +1,9 @@
 package br.com.viability.api.viability.dto;
 
+import java.math.BigDecimal;
+
 public record ViabilityResponseDto(
-        Double totalCost,
-        Double costPerM2
+        BigDecimal totalCost,
+        BigDecimal costPerM2
 ) {
 }

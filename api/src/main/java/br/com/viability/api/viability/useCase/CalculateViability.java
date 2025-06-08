@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 @Component
@@ -29,11 +30,11 @@ public class CalculateViability {
         Double costPerM2 = calculateCostPerM2(soilMoistureIncrement, elevationIncrement, soilTypeIncrement, barometryIncrement);
         Double totalCost = calculateTotalCost(costPerM2, viabilityRequestDto.totalLandArea());
 
-        return ResponseEntity.ok(new ViabilityResponseDto(totalCost, costPerM2));
+        return ResponseEntity.ok(new ViabilityResponseDto(BigDecimal.valueOf(totalCost), BigDecimal.valueOf(costPerM2)));
     }
 
     private Double calculateCostPerM2(Double ...increments) {
-        return BASE_VALUE_PER_M2 * (Arrays.stream(increments).reduce(0.0, Double::sum));
+        return BASE_VALUE_PER_M2 + (BASE_VALUE_PER_M2 * (Arrays.stream(increments).reduce(0.0, Double::sum)));
     }
 
     private Double calculateTotalCost(Double valuePerM2, Double totalLandArea) {
