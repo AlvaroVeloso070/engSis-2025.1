@@ -209,7 +209,10 @@ export default function MainView() {
                   disabled={
                     altimetryData === null ||
                     soilData === null ||
-                    barometricData === null
+                    barometricData === null ||
+                    startedBarometricAnalysis ||
+                    startedSoilAnalysis ||
+                    startedTracking
                   }
                   onClick={() => {
                     requestViabilityData();
@@ -229,7 +232,9 @@ export default function MainView() {
                   <DataCard
                     className="flex-1"
                     title="Área total do terreno"
-                    data={altimetryData?.totalLandArea ?? 0}
+                    data={
+                      !startedTracking ? altimetryData?.totalLandArea ?? 0 : 0
+                    }
                     unit="m²"
                     unitPlacement="end"
                   />
@@ -326,7 +331,9 @@ export default function MainView() {
                         <DataCard
                           className="flex-1"
                           title="Área total do terreno"
-                          data={altimetryData.totalLandArea}
+                          data={
+                            !startedTracking ? altimetryData.totalLandArea : 0
+                          }
                           unit="m²"
                           unitPlacement="end"
                         />
