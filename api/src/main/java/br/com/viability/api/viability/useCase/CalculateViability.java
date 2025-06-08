@@ -14,7 +14,7 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class CalculateViability {
 
-    private final Double BASE_VALUE_PER_M2 = 100.0;
+    private final Double BASE_VALUE_PER_M2 = 80.0;
     private final CalculateSoilMoistureIncrement calculateSoilMoistureIncrement;
     private final CalculateElevationIncrement calculateElevationIncrement;
     private final CalculateBarometryIncrement calculateBarometryIncrement;
@@ -23,17 +23,20 @@ public class CalculateViability {
         validateRequest(viabilityRequestDto);
 
         Double soilMoistureIncrement = calculateSoilMoistureIncrement.execute(viabilityRequestDto.soilMoisture());
-        Double elevationIncrement = calculateElevationIncrement.execute(viabilityRequestDto.highestPoint() - viabilityRequestDto.lowestPoint());
+        Double elevationIncrement = calculateElevationIncrement
+                .execute(viabilityRequestDto.highestPoint() - viabilityRequestDto.lowestPoint());
         Double soilTypeIncrement = viabilityRequestDto.soilType().getPercentageIncrease();
         Double barometryIncrement = calculateBarometryIncrement.execute(viabilityRequestDto.hPa());
 
-        Double costPerM2 = calculateCostPerM2(soilMoistureIncrement, elevationIncrement, soilTypeIncrement, barometryIncrement);
+        Double costPerM2 = calculateCostPerM2(soilMoistureIncrement, elevationIncrement, soilTypeIncrement,
+                barometryIncrement);
         Double totalCost = calculateTotalCost(costPerM2, viabilityRequestDto.totalLandArea());
 
-        return ResponseEntity.ok(new ViabilityResponseDto(BigDecimal.valueOf(totalCost), BigDecimal.valueOf(costPerM2)));
+        return ResponseEntity
+                .ok(new ViabilityResponseDto(BigDecimal.valueOf(totalCost), BigDecimal.valueOf(costPerM2)));
     }
 
-    private Double calculateCostPerM2(Double ...increments) {
+    private Double calculateCostPerM2(Double... increments) {
         return BASE_VALUE_PER_M2 + (BASE_VALUE_PER_M2 * (Arrays.stream(increments).reduce(0.0, Double::sum)));
     }
 
@@ -56,7 +59,7 @@ public class CalculateViability {
 
         if (request.highestPoint() <= request.lowestPoint()) {
             throw new InvalidFieldValueException("highestPoint",
-                "Highest point must be greater than lowest point");
+                    "Highest point must be greater than lowest point");
         }
 
         if (request.soilMoisture() == null) {
@@ -65,7 +68,7 @@ public class CalculateViability {
 
         if (request.soilMoisture() < 0 || request.soilMoisture() > 100) {
             throw new InvalidFieldValueException("soilMoisture",
-                "Soil moisture must be between 0 and 100%");
+                    "Soil moisture must be between 0 and 100%");
         }
 
         if (request.totalLandArea() == null) {
@@ -74,7 +77,7 @@ public class CalculateViability {
 
         if (request.totalLandArea() <= 0) {
             throw new InvalidFieldValueException("totalLandArea",
-                "Total land area must be greater than zero");
+                    "Total land area must be greater than zero");
         }
 
         if (request.soilType() == null) {
