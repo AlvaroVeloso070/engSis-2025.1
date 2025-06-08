@@ -9,3 +9,16 @@ services:
     ports:
       - "8080:8080"
     restart: unless-stopped
+
+  ui:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=http://localhost:8080/api
+    container_name: viability-ui
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    depends_on:
+      - api
