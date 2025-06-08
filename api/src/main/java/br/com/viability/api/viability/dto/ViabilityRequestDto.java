@@ -7,6 +7,7 @@ public record ViabilityRequestDto(
     Double lowestPoint,
     Double soilMoisture,
     Double totalLandArea,
-    SoilType soilType
+    SoilType soilType,
+    Double hPa
 ) {
 }

@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+
 @Component
 @RequiredArgsConstructor
 public class CalculateViability {
@@ -14,6 +16,7 @@ public class CalculateViability {
     private final Double BASE_VALUE_PER_M2 = 100.0;
     private final CalculateSoilMoistureIncrement calculateSoilMoistureIncrement;
     private final CalculateElevationIncrement calculateElevationIncrement;
+    private final CalculateBarometryIncrement calculateBarometryIncrement;
 
     public ResponseEntity<ViabilityResponseDto> execute(ViabilityRequestDto viabilityRequestDto) {
         validateRequest(viabilityRequestDto);
@@ -21,15 +24,16 @@ public class CalculateViability {
         Double soilMoistureIncrement = calculateSoilMoistureIncrement.execute(viabilityRequestDto.soilMoisture());
         Double elevationIncrement = calculateElevationIncrement.execute(viabilityRequestDto.highestPoint() - viabilityRequestDto.lowestPoint());
         Double soilTypeIncrement = viabilityRequestDto.soilType().getPercentageIncrease();
+        Double barometryIncrement = calculateBarometryIncrement.execute(viabilityRequestDto.hPa());
 
-        Double costPerM2 = calculateCostPerM2(soilMoistureIncrement, elevationIncrement, soilTypeIncrement);
+        Double costPerM2 = calculateCostPerM2(soilMoistureIncrement, elevationIncrement, soilTypeIncrement, barometryIncrement);
         Double totalCost = calculateTotalCost(costPerM2, viabilityRequestDto.totalLandArea());
 
         return ResponseEntity.ok(new ViabilityResponseDto(totalCost, costPerM2));
     }
 
-    private Double calculateCostPerM2(Double soilMoistureIncrement, Double elevationIncrement, Double soilTypeIncrement) {
-        return BASE_VALUE_PER_M2 * (soilMoistureIncrement + elevationIncrement + soilTypeIncrement);
+    private Double calculateCostPerM2(Double ...increments) {
+        return BASE_VALUE_PER_M2 * (Arrays.stream(increments).reduce(0.0, Double::sum));
     }
 
     private Double calculateTotalCost(Double valuePerM2, Double totalLandArea) {
@@ -74,6 +78,14 @@ public class CalculateViability {
 
         if (request.soilType() == null) {
             throw new InvalidFieldValueException("soilType", "Soil type cannot be null");
+        }
+
+        if (request.hPa() == null) {
+            throw new InvalidFieldValueException("hPa", "HPa cannot be null");
+        }
+
+        if (request.hPa() < 0) {
+            throw new InvalidFieldValueException("hPa", "HPa must be greater than zero");
         }
     }
 }

@@ -6,6 +6,6 @@ public record RangePercent(
         Double percentage
 ) {
     public boolean isApplicable(Double value) {
-        return value >= this.lowerLimit() && (this.upperLimit() == null || value <= this.upperLimit());
+        return (this.lowerLimit() == null || value >= this.lowerLimit()) && (this.upperLimit() == null || value <= this.upperLimit());
     }
 }
