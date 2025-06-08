@@ -1,21 +1,13 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  ResponsiveContainer,
-} from "recharts";
+import React, {useEffect, useState} from "react";
+import {CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis,} from "recharts";
 import SideBar from "./components/Sidebar";
-import { AppGlyph } from "./components/SideBarItems";
-import { Glyph, Icon, IconSize } from "./components/Icons";
+import {AppGlyph} from "./components/SideBarItems";
+import {Glyph, Icon, IconSize} from "./components/Icons";
 import DataCard from "./components/DataCard";
 import Button from "./components/Button";
 import TopBar from "./components/TopBar";
-import { start } from "repl";
-import { motion } from "framer-motion";
+import {motion} from "framer-motion";
 
 const sideBarItems = [
   {
@@ -286,7 +278,7 @@ export default function MainView() {
                           levantamento da área total do terreno e a altimetria
                           do local. Essas informações são essenciais para
                           determinar a viabilidade da obra e os custos
-                          envolvidos. A baixo, cliquei no botão rastrear caminho
+                          envolvidos. Abaixo, clique no botão rastrear caminho
                           e percorra o perímetro do terreno, clicando nos pontos
                           de interesse. Após finalizar o percurso, clique em
                           "Finalizar" para calcular a área total do terreno e a
